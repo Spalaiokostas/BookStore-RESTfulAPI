@@ -42,8 +42,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UserController {
     
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-    
     @Autowired
     private UserService userService;
     
@@ -52,37 +50,27 @@ public class UserController {
     
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> registerUser(@RequestBody AccountDTO accountDTO) {
-        //try {
-            /* call service layer */
-            User user = userService.registerNewUser(accountDTO.getUsername(),
+        /* call service layer */
+        User user = userService.registerNewUser(accountDTO.getUsername(),
                     accountDTO.getEmail(), accountDTO.getPassword());
         
-            /* construct response */
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        //} catch (Exception e) {
-            //log.error(e.getMessage());
-            //return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        //}
+        /* construct response */
+        return new ResponseEntity<>(HttpStatus.CREATED);
         
     }
     
     
     @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> showProfile() {
-        //try { 
-            /* call service layer */
-            User user = userService.getAuthenticatedUser();
+        /* call service layer */
+        User user = userService.getAuthenticatedUser();
             
-            /* build DTO */
-            UserDTO userDTO = dtoBuilder.toUserDTO(user);
+        /* build DTO */
+        UserDTO userDTO = dtoBuilder.toUserDTO(user);
             
-            /* construct response */
-            return new ResponseEntity<>(userDTO, HttpStatus.OK);
+        /* construct response */
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
             
-        //} catch (Exception e) {
-            //log.error(e.getMessage());
-            //return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        //}
     }
     
 }

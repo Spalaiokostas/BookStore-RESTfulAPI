@@ -48,8 +48,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequestMapping("/orders")
 public class OrdersController {
     
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-    
     @Autowired
     private OrderService orderService;
     
@@ -80,24 +78,19 @@ public class OrdersController {
         int bookID = orderBookDTO.getBookId();
         int quantity;
         quantity = orderBookDTO.getQuantity();
-        //try {
             
+        /* call service layer */
+        User currentUser = userService.getAuthenticatedUser();
+        Order order = orderService.orderBook(currentUser, bookID, quantity);
             
-            /* call service layer */
-            User currentUser = userService.getAuthenticatedUser();
-            Order order = orderService.orderBook(currentUser, bookID, quantity);
-            
-            /* create Location header */
-            URI location = ServletUriComponentsBuilder
+        /* create Location header */
+        URI location = ServletUriComponentsBuilder
                         .fromCurrentServletMapping().path("/orders/{id}").build()
                         .expand(order.getId()).toUri();
             
             /* constuct response that contains Location header with **
             ** the location of the created Order */
-            return ResponseEntity.created(location).build();
-        //} catch (Exception e) {
-            //return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        //}
+        return ResponseEntity.created(location).build();
         
     }
     

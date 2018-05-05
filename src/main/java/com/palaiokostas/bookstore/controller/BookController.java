@@ -46,9 +46,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 @RequestMapping("/books")
 public class BookController {
-    
-    // Define the log object for this class
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+   
     
     @Autowired
     private BookService bookService;
@@ -59,55 +57,41 @@ public class BookController {
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SimpleBookDTO>> listAllBooks() {
-        try {
-            /* call service layer */
-            List<Book> books = bookService.getAllBooks();
+
+        /* call service layer */
+        List<Book> books = bookService.getAllBooks();
             
-            /* convert Entities to DTOs for tansfer */
-            List<SimpleBookDTO> booksDTO = dtoBuilder.toSimpleBookListDTO(books);
+        /* convert Entities to DTOs for tansfer */
+        List<SimpleBookDTO> booksDTO = dtoBuilder.toSimpleBookListDTO(books);
             
-            /* construct response */
-            return new ResponseEntity<>(booksDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        /* construct response */
+        return new ResponseEntity<>(booksDTO, HttpStatus.OK);
     }
     
     
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BookDetailsDTO> getBookDetails(@PathVariable("id") int bookID) {
-        try {
             /* call service layer */
-            Book book = bookService.findBookByID(bookID);
+        Book book = bookService.findBookByID(bookID);
             
             /* convert to DTO */
-            BookDetailsDTO bookDetails = dtoBuilder.toBookDetailsDTO(book);
+        BookDetailsDTO bookDetails = dtoBuilder.toBookDetailsDTO(book);
             
             /* construst response */
-            return new ResponseEntity<>(bookDetails, HttpStatus.OK);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(bookDetails, HttpStatus.OK);
     }
     
     
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createBook(@RequestBody BookDTO bookDTO) {
-        //try {
-            Book book = dtoBuilder.fromBookDTO(bookDTO);
-            Book createdBook = bookService.createNewBook(book);
+        Book book = dtoBuilder.fromBookDTO(bookDTO);
+        Book createdBook = bookService.createNewBook(book);
             
-            UriComponents location = UriComponentsBuilder.
+        UriComponents location = UriComponentsBuilder.
                     fromUriString("/books/{id}")
                     .buildAndExpand(book.getId());
         
-            return ResponseEntity.created(location.toUri()).build();
-        //} catch (Exception e) {
-            //log.error(e.getMessage());
-            //return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        //}
+        return ResponseEntity.created(location.toUri()).build();
         
     }
             
